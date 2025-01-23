@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/22 22:58:32 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:38:29 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,9 @@ typedef	struct s_table
 /*
 	Functions
 */
-int	parse_input(t_table *table, char **argv);
-int	data_init(t_table *table);
+int		parse_input(t_table *table, char **argv);
+int		data_init(t_table *table);
+void	free_resources(t_table *table, int initialized_mutexes);
+
 
 
