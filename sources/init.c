@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 19:06:49 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/23 18:02:09 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:46:15 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,55 +51,51 @@ static int	philo_init(t_table *table)
 		philo->full = false;
 		philo->table = table;
 		assign_forks(philo, table->forks, i);
+		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
+			return(error_free("Error: Failed to init a philo mutex",
+				table, table->nbr_philos));
 	}
+	return (0);
+}	
+
+/*
+ Initiales table struct variables.
+ Returns exit status code for success or failure.
+*/
+static int	table_init(t_table *table)
+{
+	table->all_treads_created = false;
+	table->end_simulation = false;
+	table->table_mutex_init = false;
+	table->philos = NULL;
+    table->forks = NULL;
+	table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
+	table->forks = malloc(sizeof(t_fork) * table->nbr_philos);
+	if (!table->philos || !table->forks)
+		return (-1);
 	return (0);
 }
 
-void	free_resources(t_table *table, int initialized_mutexes)
-{
-    int	i;
-
-	i = -1;
-	if (table->philos)
-    {
-        free(table->philos);
-        table->philos = NULL;
-    }
-    if (table->forks)
-    {
-        while (++i < initialized_mutexes)
-            pthread_mutex_destroy(&table->forks[i].fork);
-        free(table->forks);
-        table->forks = NULL;
-    }
-}
-
 /*
-Initializes the table data (t_table).
+Executes the functions to init table and philo data, and mutexes.
 Returns 0 in case of sucess and -1 in case of error.
 */
 int	data_init(t_table *table)
 {
 	int	i;
 
-	table->end_simulation = false;
-	table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
-	table->forks = malloc(sizeof(t_fork) * table->nbr_philos);
-	if (!table->philos || !table->forks)
-	{
-		printf("Error: Memory allocation failed\n");
-		free_resources(table, 0);
-		return (-1);
-	}
 	i = -1;
+	if (table_init(table) == -1)
+		return (error_free("Error: Memory allocation failed", table, 0));
+	if (pthread_mutex_init(&table->table_mutex, NULL) != 0)
+		return (error_free("Error: Failed to init table mutex", table, 0));
+	if (pthread_mutex_init(&table->print_mutex, NULL) != 0)
+		return (error_free("Error: Failed to init write mutex", table, 0));
+	table->table_mutex_init = true;
 	while (++i < table->nbr_philos)
 	{
 		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
-		{
-			printf("Error: Mutex initialization failed at index %d\n", i);
-			free_resources(table, i);
-			return (-1);
-		}
+			return (error_free("Error: Failed to init fork mutex", table, i));
 		table->forks[i].id = i;						// used for debugging
 	}
 	return (philo_init(table));
