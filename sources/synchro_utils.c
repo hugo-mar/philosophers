@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 17:31:32 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/28 14:37:58 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:34:44 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,20 @@ void	wait_all_threads(t_table *table)
 {
 	while (!get_bool(&table->table_mutex, &table->all_treads_created))
 		;
+}
+
+bool	all_threads_running(t_mutex *mutex, long *nbr_thrds, long nbr_philos)
+{
+	bool	ret;
+
+	ret = false;
+
+	(void)mutex;
+	pthread_mutex_lock(mutex);
+	if (*nbr_thrds == nbr_philos)
+		ret = true;
+	pthread_mutex_unlock(mutex);
+	return (ret);
 }
 
 /*

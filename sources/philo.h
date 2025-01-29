@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/28 12:06:42 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:24:57 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define CLR_SCR		"\033[2J"
 # define CLR_LIN		"\033[K"
 
-# define DEBUG_MODE	0
+# define DEBUG_MODE	1
 
 # include <unistd.h>	// write, read
 # include <stdlib.h>	// malloc, free
@@ -107,15 +107,17 @@ typedef struct s_philo
 typedef	struct s_table
 {
 	long		nbr_philos;			// (argv[1])
-	long		time_to_die;		// (argv[2])
-	long		time_to_eat;		// (argv[3])
-	long		time_to_sleep;		// (argv[4])
+	long		time_to_die;		// (argv[2]) //usecs
+	long		time_to_eat;		// (argv[3]) //usecs
+	long		time_to_sleep;		// (argv[4]) //usecs
 	long		max_meals;			// (argv[5]) | It works also as a flag (-1) in case of missing arg (bivalent variable - both a flag and value)
 	long		simulation_start;
+	long		nbr_running_threads;
 	bool		all_treads_created;
 	bool		end_simulation;		// triggered when a philo dies or gets full
-	t_mutex		table_mutex;
+	pthread_t	monitor;
 	t_mutex		print_mutex;
+	t_mutex		table_mutex;
 	bool		table_mutex_init;
 	t_fork		*forks;				// Array to the forks
 	t_philo		*philos;			// Array to the philosophers
@@ -129,6 +131,10 @@ int		parse_input(t_table *table, char **argv);
 int		data_init(t_table *table);
 int		start_dinner(t_table *table);
 
+// Thread functions
+void	*dinner_simulation(void *arg);
+void	*monitor_simulation(void *arg);
+
 // Print utils
 void	print_status(t_philo *philo, t_status status, bool debug);
 
@@ -141,21 +147,13 @@ bool	get_bool(t_mutex *mutex, bool *value);
 void	set_bool(t_mutex *mutex, bool *value, bool new_value);
 long	get_long(t_mutex *mutex, long *value);
 void	set_long(t_mutex *mutex, long *value, long new_value);
+void	increment_long(t_mutex *mutex, long *value);
 bool	simulation_finished(t_table	*table);
 
-// Synchronization
+// Synchronization and chronometration
 void	wait_all_threads(t_table *table);
-
+bool	all_threads_running(t_mutex *mutex, long *nbr_thrds, long nbr_philos);
 long	get_time(t_e_time time_code);
 void	precise_usleep(long usleep_time, t_table *table);
-
-
-
-
-
-
-
-
-
 
 #endif

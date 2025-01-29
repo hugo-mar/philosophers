@@ -6,7 +6,7 @@
 #    By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/21 12:12:06 by hugo-mar          #+#    #+#              #
-#    Updated: 2025/01/27 14:04:03 by hugo-mar         ###   ########.fr        #
+#    Updated: 2025/01/28 19:15:46 by hugo-mar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRCS_DIR = sources
 SRCS = $(SRCS_DIR)/main.c $(SRCS_DIR)/parsing.c $(SRCS_DIR)/init.c \
 		$(SRCS_DIR)/error_handling.c $(SRCS_DIR)/dinner.c \
 		$(SRCS_DIR)/getters_and_setters.c $(SRCS_DIR)/synchro_utils.c\
-		$(SRCS_DIR)/print.c \
+		$(SRCS_DIR)/print.c $(SRCS_DIR)/monitor.c \
 
 OBJS = $(SRCS:.c=.o)
 

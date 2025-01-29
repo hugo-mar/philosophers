@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 10:40:42 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/28 15:26:03 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:25:27 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,9 @@ void	*dinner_simulation(void *arg)
 
 	philo = (t_philo *)arg;
 	wait_all_threads(philo->table);
-
+	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MILISSECONDS));
+	increment_long(&philo->table->table_mutex,
+		&philo->table->nbr_running_threads);  // To synchro with monitor
 	while (!simulation_finished(philo->table))
 	{
 		if (philo->full)			//Make safe?
@@ -62,8 +64,22 @@ void	*dinner_simulation(void *arg)
 		ft_sleep(philo);
 		ft_think(philo);
 	}
-	
+	return (NULL);
+}
 
+void	*lone_philo(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	wait_all_threads(philo->table);
+	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MILISSECONDS));
+	increment_long(&philo->table->table_mutex,
+		&philo->table->nbr_running_threads);  // To synchro with monitor
+
+	print_status(philo, FIRST_FORK, DEBUG_MODE);
+	while(!simulation_finished(philo->table))
+		usleep(200);
 	return (NULL);
 }
 
@@ -79,14 +95,20 @@ int	start_dinner(t_table *table)
 	i = -1;
 	if (table->max_meals == 0)
 		return (0);
-	// if (table->max_meals == 1)
-	// 	/* ad_hoc_ft */;										// To do
-	while (++i < table->nbr_philos)
+	else if (table->max_meals == 1)
 	{
-		if (pthread_create(&table->philos[i].thr_id, NULL, dinner_simulation,
-			&table->philos[i]) != 0)
+		if (pthread_create(&table->philos[0].thr_id, NULL, lone_philo, &table->philos[0]) != 0)
 			return (error_free("Error: Thread init", table, table->nbr_philos));
 	}
+	else										
+		while (++i < table->nbr_philos)
+		{
+			if (pthread_create(&table->philos[i].thr_id, NULL, dinner_simulation,
+				&table->philos[i]) != 0)
+				return (error_free("Error: Thread init", table, table->nbr_philos));
+		}
+	if (pthread_create(&table->monitor, NULL, monitor_simulation, table) != 0)
+		return (error_free("Error: Thread init", table, table->nbr_philos));
 	table->simulation_start = get_time(MILISSECONDS);
 	set_bool(&table->table_mutex, &table->all_treads_created, true);
 	i = -1;
@@ -95,5 +117,9 @@ int	start_dinner(t_table *table)
 		if (pthread_join(table->philos[i].thr_id, NULL) != 0)
 			return (error_free("Error: Thread join", table, table->nbr_philos));
 	}
+
+	// if (pthread_join(table->monitor, NULL) != 0)								//Still not implemented by oceano
+	// 	return (error_free("Error: Thread join", table, table->nbr_philos));
+
 	return (0);
 }

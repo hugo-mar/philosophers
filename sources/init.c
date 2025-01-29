@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 19:06:49 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/27 16:46:15 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 08:23:30 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static int	philo_init(t_table *table)
 */
 static int	table_init(t_table *table)
 {
+	table->nbr_running_threads = 0;
 	table->all_treads_created = false;
 	table->end_simulation = false;
 	table->table_mutex_init = false;
