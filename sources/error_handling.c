@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:30:17 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/25 10:44:49 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:27:43 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,30 @@ Frees all the resources allocated and created.
 */
 void	free_resources(t_table *table, int threads_created)
 {
-    int	i;
+	int	i;
 
 	i = -1;
 	if (table->philos)
-    {
-        free(table->philos);
-        table->philos = NULL;
-    }
+	{
+		while (++i < threads_created)
+			if (table->philos[i].philo_mutex_init)
+				pthread_mutex_destroy(&table->philos[i].philo_mutex);
+		free(table->philos);
+		table->philos = NULL;
+	}
+	i = -1;
+	if (table->forks)
+	{
+		while (++i < threads_created)
+			if (table->forks[i].fork_mutex_init)
+				pthread_mutex_destroy(&table->forks[i].fork);
+		free(table->forks);
+		table->forks = NULL;
+	}
 	if (table->table_mutex_init)
 		pthread_mutex_destroy(&table->table_mutex);
-    if (table->forks)
-    {
-        while (++i < threads_created)
-            pthread_mutex_destroy(&table->forks[i].fork);
-        free(table->forks);
-        table->forks = NULL;
-    }
+	if (table->print_mutex_init)
+		pthread_mutex_destroy(&table->print_mutex);
 }
 
 /*

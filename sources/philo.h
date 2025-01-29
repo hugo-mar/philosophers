@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 12:24:57 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:27:38 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,9 @@ typedef struct s_table t_table;
 */
 typedef struct s_fork
 {
-	int		id;
+	int		id;						// Used for debugging
 	t_mutex	fork;
+	bool	fork_mutex_init;
 }			t_fork;
 
 typedef struct s_philo
@@ -98,6 +99,7 @@ typedef struct s_philo
 	t_fork		*first_fork;		// odd-even assignment
 	t_fork		*second_fork;		//     "		"
 	t_mutex		philo_mutex;		// Used for races with the monitor
+	bool		philo_mutex_init;
 	long		last_meal_time;		// Allows to see the time passed from last meal
 	long		meals_taken;
 	bool		full;				// Comeu o max de refeições
@@ -117,6 +119,7 @@ typedef	struct s_table
 	bool		end_simulation;		// triggered when a philo dies or gets full
 	pthread_t	monitor;
 	t_mutex		print_mutex;
+	bool		print_mutex_init;
 	t_mutex		table_mutex;
 	bool		table_mutex_init;
 	t_fork		*forks;				// Array to the forks

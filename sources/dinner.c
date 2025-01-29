@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 10:40:42 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 12:59:43 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:27:47 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ void	*lone_philo(void *arg)
 	return (NULL);
 }
 
-
 /*
 Starts the dinner. Handles 0 or 1 philosopher situation. Creates all threads,
 running the dinner simulation. Waits for all them to join before finish.
@@ -118,8 +117,10 @@ int	start_dinner(t_table *table)
 			return (error_free("Error: Thread join", table, table->nbr_philos));
 	}
 
-	// if (pthread_join(table->monitor, NULL) != 0)								//Maybe not implement?? Try first with it...
-	// 	return (error_free("Error: Thread join", table, table->nbr_philos));
+	set_bool(&table->table_mutex, &table->end_simulation, true);
+
+	if (pthread_join(table->monitor, NULL) != 0)
+		return (error_free("Error: Thread join", table, table->nbr_philos));
 
 	return (0);
 }

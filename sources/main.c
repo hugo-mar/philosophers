@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 11:58:49 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/27 05:26:59 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:27:45 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int argc, char **argv)
 			return (1);
 		free_resources(&table, table.nbr_philos);	// When philos all are full
 	}												// or when one philo dies
-	else											// DESTROY MUTEXES
+	else
 	{
 		printf("Invalid number of arguments\n");
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 19:06:49 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 08:23:30 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:27:41 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static int	philo_init(t_table *table)
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
 			return(error_free("Error: Failed to init a philo mutex",
 				table, table->nbr_philos));
+		philo->philo_mutex_init = true;
 	}
 	return (0);
 }	
@@ -64,16 +65,25 @@ static int	philo_init(t_table *table)
 */
 static int	table_init(t_table *table)
 {
+	int	i;
+
+	i = -1;
 	table->nbr_running_threads = 0;
 	table->all_treads_created = false;
 	table->end_simulation = false;
 	table->table_mutex_init = false;
+	table->print_mutex_init = false;
 	table->philos = NULL;
     table->forks = NULL;
 	table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
 	table->forks = malloc(sizeof(t_fork) * table->nbr_philos);
 	if (!table->philos || !table->forks)
 		return (-1);
+	while (++i < table->nbr_philos)
+	{
+		table->philos[i].philo_mutex_init = false;
+		table->forks[i].fork_mutex_init = false;
+	}
 	return (0);
 }
 
@@ -90,14 +100,18 @@ int	data_init(t_table *table)
 		return (error_free("Error: Memory allocation failed", table, 0));
 	if (pthread_mutex_init(&table->table_mutex, NULL) != 0)
 		return (error_free("Error: Failed to init table mutex", table, 0));
+	table->table_mutex_init = true;
 	if (pthread_mutex_init(&table->print_mutex, NULL) != 0)
 		return (error_free("Error: Failed to init write mutex", table, 0));
-	table->table_mutex_init = true;
+	table->print_mutex_init = true;
 	while (++i < table->nbr_philos)
 	{
 		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
 			return (error_free("Error: Failed to init fork mutex", table, i));
+		table->forks[i].fork_mutex_init = true;
 		table->forks[i].id = i;						// used for debugging
 	}
+
+
 	return (philo_init(table));
 }
