@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 10:40:42 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 12:25:27 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:59:43 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	start_dinner(t_table *table)
 	i = -1;
 	if (table->max_meals == 0)
 		return (0);
-	else if (table->max_meals == 1)
+	else if (table->nbr_philos == 1)
 	{
 		if (pthread_create(&table->philos[0].thr_id, NULL, lone_philo, &table->philos[0]) != 0)
 			return (error_free("Error: Thread init", table, table->nbr_philos));
@@ -118,7 +118,7 @@ int	start_dinner(t_table *table)
 			return (error_free("Error: Thread join", table, table->nbr_philos));
 	}
 
-	// if (pthread_join(table->monitor, NULL) != 0)								//Still not implemented by oceano
+	// if (pthread_join(table->monitor, NULL) != 0)								//Maybe not implement?? Try first with it...
 	// 	return (error_free("Error: Thread join", table, table->nbr_philos));
 
 	return (0);
