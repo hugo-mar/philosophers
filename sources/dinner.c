@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 10:40:42 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 19:27:47 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:33:36 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,34 @@ static void	ft_eat(t_philo	*philo)
 	pthread_mutex_unlock(&philo->second_fork->fork);
 }
 
-static void	ft_think(t_philo *philo)
+static void	ft_think(t_philo *philo, bool pre_simulation)
 {
-	print_status(philo, THINKING, DEBUG_MODE);
+	int	t_think;
+
+	if(!pre_simulation)
+		print_status(philo, THINKING, DEBUG_MODE);
+	if ((philo->table->nbr_philos % 2) == 0)
+		return ;
+	t_think = (philo->table->time_to_eat * 2) - philo->table->time_to_sleep;	// available time to think
+	if (t_think < 0)
+		return ;
+	else
+		precise_usleep(t_think * 0.42, philo->table);
+}
+
+/*
+To make the system fair
+*/
+void	desynchronize_philos(t_philo *philo)
+{
+	if (philo->table->nbr_philos % 2 == 0)
+	{
+		if (philo->id % 2 == 0)
+			precise_usleep(30000, philo->table); 	//half of the time, the minimum time available that we can give to the system (60ms)
+	}
+	else
+		if (philo->id % 2 != 0)
+			ft_think(philo, true);
 }
 
 void	*dinner_simulation(void *arg)
@@ -56,13 +81,16 @@ void	*dinner_simulation(void *arg)
 	set_long(&philo->philo_mutex, &philo->last_meal_time, get_time(MILISSECONDS));
 	increment_long(&philo->table->table_mutex,
 		&philo->table->nbr_running_threads);  // To synchro with monitor
+	
+	desynchronize_philos(philo);
+
 	while (!simulation_finished(philo->table))
 	{
 		if (philo->full)			//Make safe?
 			break ;
 		ft_eat(philo);
 		ft_sleep(philo);
-		ft_think(philo);
+		ft_think(philo, false);
 	}
 	return (NULL);
 }

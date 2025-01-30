@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 19:27:38 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:39:07 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define CLR_SCR		"\033[2J"
 # define CLR_LIN		"\033[K"
 
-# define DEBUG_MODE	1
+# define DEBUG_MODE	0
 
 # include <unistd.h>	// write, read
 # include <stdlib.h>	// malloc, free
@@ -57,6 +57,37 @@
 // long, porque vamos usar microsseconds no project
 // e tudo longs, porque vamos usar getters e setter que beneficiam dessa uniformidade
 // é preciso perceber como é que os longs organizam o tempo do getttimeofday (a correspondência de unidades) para peceber divisões e multi por 1000 ou 1000000 nos longs
+
+
+// Starvation is avoided if the system is fair (every philo respects it's own turn)
+// For an even nbr of philos the system is fair by design (fork atribution)
+// for odd nbr of philos we have a system that it's not fair
+
+// Empirical observations:
+
+// When system is even - we don't want to control the thinking time
+
+// if (philo_even && (t_eat <= t_sleep)			// There is no thinking time; thinking time is the contention time, the time waiting for the forks
+//		t_think = 0;							// But in this case there is no contention at all; the simmetry of the system implies that there is no contention at all
+
+// else											// (t_eat > t_sleep)
+
+//		t_think = t_eat - t_sleep;				// The thinking time exists in this situations, because philos are waiting for the forks
+
+// (TLDR - for even philos the system is already fair, beacause, no philo can eat 2 times in a row without thinking. It's blocked by the neighbour by the system architecture)
+
+// When system is odd - the properties change (Starvation for odds)
+
+// if (philo_odd && (t_eat == t_sleep))			// time to think is equal to time to eat or time to sleep
+// 		t_think = t_eat;
+
+// else if (philo_odd && (t_eat < t_sleep)) 	// Because we have to wait for our neighbour to finish eating (whe don't have perfect simmetry)
+//		t_think = (t_eat * 2) - t_sleep;
+
+// else if (philo_odd && (t_eat > t_sleep))
+//		t_think = (t_eat * 2) - t_sleep;
+
+// COnclusão - when philod are odd: t_think = (t_eat * 2) - t_sleep; (even for the first odd case)
 
 /*
 	Readability
@@ -116,7 +147,7 @@ typedef	struct s_table
 	long		simulation_start;
 	long		nbr_running_threads;
 	bool		all_treads_created;
-	bool		end_simulation;		// triggered when a philo dies or gets full
+	bool		end_simulation;		// triggered when a philo dies or gets full (by monitor or main thread)
 	pthread_t	monitor;
 	t_mutex		print_mutex;
 	bool		print_mutex_init;

@@ -6,12 +6,11 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 19:00:46 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 19:27:49 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:33:51 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 static bool	philo_died(t_philo *philo)
 {
