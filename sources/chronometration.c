@@ -1,39 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   synchro_utils.c                                    :+:      :+:    :+:   */
+/*   chronometration.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/25 17:31:32 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 11:34:44 by hugo-mar         ###   ########.fr       */
+/*   Created: 2025/01/30 18:45:13 by hugo-mar          #+#    #+#             */
+/*   Updated: 2025/01/30 19:00:30 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-/*
-A spinlock to synchronize all the threads.
-*/
-void	wait_all_threads(t_table *table)
-{
-	while (!get_bool(&table->table_mutex, &table->all_treads_created))
-		;
-}
-
-bool	all_threads_running(t_mutex *mutex, long *nbr_thrds, long nbr_philos)
-{
-	bool	ret;
-
-	ret = false;
-
-	(void)mutex;
-	pthread_mutex_lock(mutex);
-	if (*nbr_thrds == nbr_philos)
-		ret = true;
-	pthread_mutex_unlock(mutex);
-	return (ret);
-}
 
 /*
 Returns the current time in the requested time unit, or -1 in case of errror.
@@ -46,7 +23,7 @@ long	get_time(t_e_time time_code)
 		return (-1);
 	if (time_code == SECONDS)
 		return (tv.tv_sec + (tv.tv_usec / 1000000));
-	else if (time_code == MILISSECONDS)
+	else if (time_code == MILLISSECONDS)
 		return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 	else if (time_code == MICROSSECONDS)
 		return ((tv.tv_sec * 1000000) + tv.tv_usec);
@@ -67,13 +44,11 @@ void	precise_usleep(long usleep_time, t_table *table)
 
 	start = get_time(MICROSSECONDS);
 	current = start;
-
 	elapsed = 0;
-	
 	while ((current - start) < usleep_time)
 	{
 		if (simulation_finished(table))
-			break;
+			break ;
 		current = get_time(MICROSSECONDS);
 		elapsed = current - start;
 		remaining = usleep_time - elapsed;
@@ -81,6 +56,6 @@ void	precise_usleep(long usleep_time, t_table *table)
 			usleep(remaining / 2);
 		else
 			while ((get_time(MICROSSECONDS) - start) < usleep_time)
-			;
+				;
 	}
 }

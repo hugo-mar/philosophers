@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 13:05:48 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 12:21:20 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 23:39:54 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,4 @@ void	increment_long(t_mutex *mutex, long *value)
 	pthread_mutex_lock(mutex);
 	(*value)++;
 	pthread_mutex_unlock(mutex);
-}
-
-bool	simulation_finished(t_table	*table)
-{
-	return (get_bool(&table->table_mutex, &table->end_simulation));
 }

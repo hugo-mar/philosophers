@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 12:02:45 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/23 15:32:16 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 18:05:13 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ static long	ft_atol(const char *str)
 		return (nbr);
 }
 
+/*
+Parses the input. The recieved time values will be converted to usecs for
+uniformity. Max_meals works as a bivalent variable. If não value recieved it's
+initiated with -1, working also as a flag,
+*/
 int	parse_input(t_table *table, char **argv)
 {
 	table->nbr_philos = ft_atol(argv[1]);

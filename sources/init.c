@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 19:06:49 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 19:27:41 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 23:44:05 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ odd philos take fist the left fork, even philos take first the right one.
 */
 static void	assign_forks(t_philo *philo, t_fork *forks, int philo_position)
 {
-	int nbr_philos;
+	int	nbr_philos;
 
 	nbr_philos = philo->table->nbr_philos;
 	if (philo->id % 2 == 0)
@@ -52,12 +52,12 @@ static int	philo_init(t_table *table)
 		philo->table = table;
 		assign_forks(philo, table->forks, i);
 		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
-			return(error_free("Error: Failed to init a philo mutex",
-				table, table->nbr_philos));
+			return (error_free("Error: Failed to init a philo mutex",
+					table, table->nbr_philos));
 		philo->philo_mutex_init = true;
 	}
 	return (0);
-}	
+}
 
 /*
  Initiales table struct variables.
@@ -74,7 +74,7 @@ static int	table_init(t_table *table)
 	table->table_mutex_init = false;
 	table->print_mutex_init = false;
 	table->philos = NULL;
-    table->forks = NULL;
+	table->forks = NULL;
 	table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
 	table->forks = malloc(sizeof(t_fork) * table->nbr_philos);
 	if (!table->philos || !table->forks)
@@ -109,9 +109,7 @@ int	data_init(t_table *table)
 		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
 			return (error_free("Error: Failed to init fork mutex", table, i));
 		table->forks[i].fork_mutex_init = true;
-		table->forks[i].id = i;						// used for debugging
+		table->forks[i].id = i;
 	}
-
-
 	return (philo_init(table));
 }

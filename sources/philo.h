@@ -6,19 +6,20 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/30 14:39:07 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:30:07 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-/* ANSI escape sequences */
-# define RESET		"\033[0m"
+/*
+	ANSI escape sequences
+*/
+# define RST		"\033[0m"
 # define B			"\033[1m"
 # define U			"\033[4m"
 # define BLINK		"\033[5m"
-
 # define BLK		"\033[30m"
 # define RED		"\033[31m"
 # define GRN		"\033[32m"
@@ -27,7 +28,6 @@
 # define MGT		"\033[35m"
 # define CYN		"\033[36m"
 # define WHT		"\033[37m"
-
 # define BG_BLK		"\033[40m"
 # define BG_RED		"\033[41m"
 # define BG_GRN		"\033[42m"
@@ -36,89 +36,55 @@
 # define BG_MGT		"\033[45m"
 # define BG_CYN		"\033[46m"
 # define BG_WHT		"\033[47m"
-
-# define CLR_SCR		"\033[2J"
-# define CLR_LIN		"\033[K"
-
-# define DEBUG_MODE	0
-
-# include <unistd.h>	// write, read
-# include <stdlib.h>	// malloc, free
-# include <stdio.h>		// printf
-# include <string.h>	// memset
-# include <sys/time.h>	// usleep, gettimeofday
-# include <stdint.h>	// uint64_t
-# include <limits.h>	// INT_MAX, INT MIN 
-# include <stdbool.h>
-# include <errno.h>
-# include <pthread.h>	// pthread: create, join, detach
-						// pthread_mutex: init, destroy, lock, unlock
-
-// long, porque vamos usar microsseconds no project
-// e tudo longs, porque vamos usar getters e setter que beneficiam dessa uniformidade
-// é preciso perceber como é que os longs organizam o tempo do getttimeofday (a correspondência de unidades) para peceber divisões e multi por 1000 ou 1000000 nos longs
-
-
-// Starvation is avoided if the system is fair (every philo respects it's own turn)
-// For an even nbr of philos the system is fair by design (fork atribution)
-// for odd nbr of philos we have a system that it's not fair
-
-// Empirical observations:
-
-// When system is even - we don't want to control the thinking time
-
-// if (philo_even && (t_eat <= t_sleep)			// There is no thinking time; thinking time is the contention time, the time waiting for the forks
-//		t_think = 0;							// But in this case there is no contention at all; the simmetry of the system implies that there is no contention at all
-
-// else											// (t_eat > t_sleep)
-
-//		t_think = t_eat - t_sleep;				// The thinking time exists in this situations, because philos are waiting for the forks
-
-// (TLDR - for even philos the system is already fair, beacause, no philo can eat 2 times in a row without thinking. It's blocked by the neighbour by the system architecture)
-
-// When system is odd - the properties change (Starvation for odds)
-
-// if (philo_odd && (t_eat == t_sleep))			// time to think is equal to time to eat or time to sleep
-// 		t_think = t_eat;
-
-// else if (philo_odd && (t_eat < t_sleep)) 	// Because we have to wait for our neighbour to finish eating (whe don't have perfect simmetry)
-//		t_think = (t_eat * 2) - t_sleep;
-
-// else if (philo_odd && (t_eat > t_sleep))
-//		t_think = (t_eat * 2) - t_sleep;
-
-// COnclusão - when philod are odd: t_think = (t_eat * 2) - t_sleep; (even for the first odd case)
+# define CLR_SCR	"\033[2J"
+# define CLR_LIN	"\033[K"
 
 /*
-	Readability
+	Debugging mode
+*/
+# define DEBUG_MODE	0
+
+/*
+	Libraries
+*/
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <sys/time.h>
+# include <limits.h> 
+# include <stdbool.h>
+# include <pthread.h>
+
+/*
+	Readability typedef's
 */
 typedef pthread_mutex_t	t_mutex;
 
-typedef enum	e_time
+typedef enum e_time
 {
 	SECONDS,
-	MILISSECONDS,
+	MILLISSECONDS,
 	MICROSSECONDS,
 }				t_e_time;
 
-typedef enum	e_status
+typedef enum e_status
 {
 	EATING,
 	SLEEPING,
 	THINKING,
 	FIRST_FORK,
 	SECOND_FORK,
-	DIED  ,
+	DIED,
 }				t_status;
-
-typedef struct s_table t_table;
 
 /*
 	Structs
 */
+typedef struct s_table	t_table;
+
 typedef struct s_fork
 {
-	int		id;						// Used for debugging
+	int		id;
 	t_mutex	fork;
 	bool	fork_mutex_init;
 }			t_fork;
@@ -126,35 +92,35 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	int			id;
-	pthread_t	thr_id;				// A philo is a thread
-	t_fork		*first_fork;		// odd-even assignment
-	t_fork		*second_fork;		//     "		"
-	t_mutex		philo_mutex;		// Used for races with the monitor
+	pthread_t	thr_id;
+	t_fork		*first_fork;
+	t_fork		*second_fork;
+	t_mutex		philo_mutex;
 	bool		philo_mutex_init;
-	long		last_meal_time;		// Allows to see the time passed from last meal
+	long		last_meal_time;
 	long		meals_taken;
-	bool		full;				// Comeu o max de refeições
+	bool		full;
 	t_table		*table;
 }				t_philo;
 
-typedef	struct s_table
+typedef struct s_table
 {
-	long		nbr_philos;			// (argv[1])
-	long		time_to_die;		// (argv[2]) //usecs
-	long		time_to_eat;		// (argv[3]) //usecs
-	long		time_to_sleep;		// (argv[4]) //usecs
-	long		max_meals;			// (argv[5]) | It works also as a flag (-1) in case of missing arg (bivalent variable - both a flag and value)
+	long		nbr_philos;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		max_meals;
 	long		simulation_start;
 	long		nbr_running_threads;
 	bool		all_treads_created;
-	bool		end_simulation;		// triggered when a philo dies or gets full (by monitor or main thread)
+	bool		end_simulation;
 	pthread_t	monitor;
 	t_mutex		print_mutex;
 	bool		print_mutex_init;
 	t_mutex		table_mutex;
 	bool		table_mutex_init;
-	t_fork		*forks;				// Array to the forks
-	t_philo		*philos;			// Array to the philosophers
+	t_fork		*forks;
+	t_philo		*philos;
 }				t_table;
 
 /*
@@ -168,6 +134,10 @@ int		start_dinner(t_table *table);
 // Thread functions
 void	*dinner_simulation(void *arg);
 void	*monitor_simulation(void *arg);
+void	*lone_philo(void *arg);
+void	ft_eat(t_philo	*philo);
+void	ft_sleep(t_philo *philo);
+void	ft_think(t_philo *philo, bool pre_simulation);
 
 // Print utils
 void	print_status(t_philo *philo, t_status status, bool debug);
@@ -187,6 +157,7 @@ bool	simulation_finished(t_table	*table);
 // Synchronization and chronometration
 void	wait_all_threads(t_table *table);
 bool	all_threads_running(t_mutex *mutex, long *nbr_thrds, long nbr_philos);
+void	desynchronize_philos(t_philo *philo);
 long	get_time(t_e_time time_code);
 void	precise_usleep(long usleep_time, t_table *table);
 
