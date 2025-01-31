@@ -6,14 +6,14 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 12:02:45 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/30 18:05:13 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/01/31 23:30:05 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /*
-Checks if a char is a space
+Checks if a char is a space.
 */
 static inline bool	is_space(const char chr)
 {
@@ -21,7 +21,7 @@ static inline bool	is_space(const char chr)
 }
 
 /*
-Checks if a char is a digit
+Checks if a char is a digit.
 */
 static inline bool	is_digit(const char chr)
 {
@@ -29,18 +29,26 @@ static inline bool	is_digit(const char chr)
 }
 
 /*
-Checks if a number is valid
+Validates if the input is a positive number,
+and has 10 significant digits maximum (same as MAX_INT).
 */
 static bool	valid_nbr(const char *str)
 {
 	int	i;
+	int j;
 
 	i = 0;
+	j = 0;
 	if (!is_digit(*str))
 		return (false);
+	while(str[i] == '0')
+	{
+		i++;
+		j++;
+	}
 	while (is_digit(str[i]))
 		i++;
-	return (i <= 10);
+	return ((i - j) <= 10);
 }
 
 /*
@@ -53,7 +61,7 @@ static long	ft_atol(const char *str)
 	nbr = 0;
 	while (is_space(*str))
 		str++;
-	while (*str == '+')
+	if (*str == '+')
 		str++;
 	if (!valid_nbr(str))
 		return (-1);
@@ -69,9 +77,9 @@ static long	ft_atol(const char *str)
 }
 
 /*
-Parses the input. The recieved time values will be converted to usecs for
-uniformity. Max_meals works as a bivalent variable. If não value recieved it's
-initiated with -1, working also as a flag,
+Parses the input. The received time values are converted to microseconds for
+uniformity. max_meals acts as a bivalent variable: if no value is provided, 
+it is initialized to -1, serving as a flag.
 */
 int	parse_input(t_table *table, char **argv)
 {
@@ -85,7 +93,9 @@ int	parse_input(t_table *table, char **argv)
 		table->max_meals = -1;
 	if (table->time_to_die < (60 * 1000) || table->time_to_eat < (60 * 1000)
 		|| table->time_to_sleep < (60 * 1000) || table->nbr_philos == 0)
+	{
+		printf("Invalid arguments\n");
 		return (-1);
-	else
-		return (0);
+	}
+	return (0);
 }
