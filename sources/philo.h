@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/31 18:09:25 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/01 13:39:10 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ typedef struct s_table
 	long		max_meals;
 	long		simulation_start;
 	long		nbr_running_threads;
-	bool		all_treads_created;
+	bool		all_threads_created;
 	bool		end_simulation;
 	pthread_t	monitor;
 	t_mutex		print_mutex;
@@ -143,8 +143,8 @@ void	ft_think(t_philo *philo, bool pre_simulation);
 void	print_status(t_philo *philo, t_status status, bool debug);
 
 // Cleanup functions
-int		error_free(char	*error_message, t_table *table, int threads_created);
-void	free_resources(t_table *table, int initialized_mutexes);
+int		error_free(char	*error_message, t_table *table);
+void	free_resources(t_table *table);
 
 // Getters and setters
 bool	get_bool(t_mutex *mutex, bool *value);

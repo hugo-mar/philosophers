@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 17:31:32 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/30 23:51:25 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/01 07:09:48 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ A spinlock to synchronize all the threads.
 */
 void	wait_all_threads(t_table *table)
 {
-	while (!get_bool(&table->table_mutex, &table->all_treads_created))
+	while (!get_bool(&table->table_mutex, &table->all_threads_created))
 		;
 }
 

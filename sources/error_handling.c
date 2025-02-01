@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:30:17 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/29 19:27:43 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/01 13:43:51 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 /*
 Frees all the resources allocated and created.
 */
-void	free_resources(t_table *table, int threads_created)
+void	free_resources(t_table *table)
 {
 	int	i;
 
 	i = -1;
 	if (table->philos)
 	{
-		while (++i < threads_created)
+		while (++i < table->nbr_philos)
 			if (table->philos[i].philo_mutex_init)
 				pthread_mutex_destroy(&table->philos[i].philo_mutex);
 		free(table->philos);
@@ -31,7 +31,7 @@ void	free_resources(t_table *table, int threads_created)
 	i = -1;
 	if (table->forks)
 	{
-		while (++i < threads_created)
+		while (++i < table->nbr_philos)
 			if (table->forks[i].fork_mutex_init)
 				pthread_mutex_destroy(&table->forks[i].fork);
 		free(table->forks);
@@ -44,12 +44,12 @@ void	free_resources(t_table *table, int threads_created)
 }
 
 /*
-Prints a costum error message and frees the resources in case of error.
-It recieves the number of threads created. Returns an error code (-1).
+Prints an error message and frees allocated resources in case of failure.
+Returns -1 to indicate an error.
 */
-int	error_free(char	*error_message, t_table *table, int threads_created)
+int	error_free(char	*error_message, t_table *table)
 {
 	printf("%s\n", error_message);
-	free_resources(table, threads_created);
+	free_resources(table);
 	return (-1);
 }
