@@ -6,12 +6,19 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 10:40:42 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/02/02 15:29:37 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 23:35:05 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/*
+Creates and launches the necessary threads:
+- If there is only one philosopher, runs the `lone_philo` function.
+- Otherwise, starts the dinner simulation for all philosophers.
+- Additionally, starts the monitor thread to check for deaths.
+Returns 0 on success, -1 on failure.
+*/
 static int	launch_threads(t_table *table)
 {
 	int	i;
@@ -35,6 +42,11 @@ static int	launch_threads(t_table *table)
 	return (0);
 }
 
+/*
+Waits for all philosopher threads and the monitor thread to finish.
+Sets 'end_simulation' to true to ensure proper termination.
+Returns 0 on success, -1 on failure.
+*/
 static int	join_threads(t_table *table)
 {
 	int	i;
@@ -50,9 +62,9 @@ static int	join_threads(t_table *table)
 }
 
 /*
-Starts the dinner. Exits if no meals (no simulation). Launches all threads,
-running the dinner simulation, starts the timer, and waits for them to finish.
-In case of error, makes a clean exit.
+Runs the philosopher dinner simulation. Exits if no meals are required.
+Launches and synchronizes threads, and waits for their completion.
+Errors are handled.
 */
 int	start_dinner(t_table *table)
 {

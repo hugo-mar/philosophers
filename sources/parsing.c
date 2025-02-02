@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 12:02:45 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/02/02 16:07:53 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 23:28:44 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ static long	ft_atol(const char *str)
 /*
 Parses the input. The received time values are converted to microseconds for
 uniformity. max_meals acts as a bivalent variable: if no value is provided, 
-it is initialized to -1, serving as a flag.
+it is initialized to -1, serving as a flag (-2 is as flag value for an ft_atol
+error return).
 */
 int	parse_input(t_table *table, char **argv)
 {
@@ -88,11 +89,16 @@ int	parse_input(t_table *table, char **argv)
 	table->time_to_eat = ft_atol(argv[3]) * 1000;
 	table->time_to_sleep = ft_atol(argv[4]) * 1000;
 	if (argv[5])
+	{
 		table->max_meals = ft_atol(argv[5]);
+		if (table->max_meals == -1)
+			table->max_meals = -2;
+	}
 	else
 		table->max_meals = -1;
 	if (table->time_to_die < (60 * 1000) || table->time_to_eat < (60 * 1000)
-		|| table->time_to_sleep < (60 * 1000) || table->nbr_philos == 0)
+		|| table->time_to_sleep < (60 * 1000) || table->nbr_philos == 0
+		|| table->max_meals == -2)
 	{
 		printf("Invalid arguments\n");
 		return (-1);
