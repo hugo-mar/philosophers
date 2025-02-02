@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 22:16:06 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/02/01 13:39:10 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:28:49 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ typedef pthread_mutex_t	t_mutex;
 typedef enum e_time
 {
 	SECONDS,
-	MILLISSECONDS,
-	MICROSSECONDS,
+	MILLISECONDS,
+	MICROSECONDS,
 }				t_e_time;
 
 typedef enum e_status

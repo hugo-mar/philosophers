@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 12:02:45 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/31 23:36:08 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:07:53 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ and has 10 significant digits maximum (same as MAX_INT).
 static bool	valid_nbr(const char *str)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 0;
 	j = 0;
 	if (!is_digit(*str))
 		return (false);
-	while(str[i] == '0')
+	while (str[i] == '0')
 	{
 		i++;
 		j++;

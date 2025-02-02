@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:58:18 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/30 23:47:50 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:29:23 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	print_status(t_philo *philo, t_status status, bool debug)
 	if (simulation_finished(philo->table) || get_bool(&philo->philo_mutex,
 			&philo->full))
 		return ;
-	elapsed = get_time(MILLISSECONDS) - philo->table->simulation_start;
+	elapsed = get_time(MILLISECONDS) - philo->table->simulation_start;
 	pthread_mutex_lock(&philo->table->print_mutex);
 	if (debug)
 		debug_print(philo, status, elapsed);

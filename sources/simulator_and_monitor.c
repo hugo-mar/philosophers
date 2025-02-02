@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 19:00:46 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/30 23:39:51 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:29:13 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	*dinner_simulation(void *arg)
 	philo = (t_philo *)arg;
 	wait_all_threads(philo->table);
 	set_long(&philo->philo_mutex, &philo->last_meal_time,
-		get_time(MILLISSECONDS));
+		get_time(MILLISECONDS));
 	increment_long(&philo->table->table_mutex,
 		&philo->table->nbr_running_threads);
 	desynchronize_philos(philo);
@@ -46,7 +46,7 @@ static bool	philo_died(t_philo *philo)
 
 	if (get_bool(&philo->philo_mutex, &philo->full))
 		return (false);
-	elapsed = get_time(MILLISSECONDS) - get_long(&philo->philo_mutex,
+	elapsed = get_time(MILLISECONDS) - get_long(&philo->philo_mutex,
 			&philo->last_meal_time);
 	time_to_die = philo->table->time_to_die / 1000;
 	if (elapsed > time_to_die)
@@ -85,7 +85,7 @@ void	*lone_philo(void *arg)
 	philo = (t_philo *)arg;
 	wait_all_threads(philo->table);
 	set_long(&philo->philo_mutex, &philo->last_meal_time,
-		get_time(MILLISSECONDS));
+		get_time(MILLISECONDS));
 	increment_long(&philo->table->table_mutex,
 		&philo->table->nbr_running_threads);
 	print_status(philo, FIRST_FORK, DEBUG_MODE);

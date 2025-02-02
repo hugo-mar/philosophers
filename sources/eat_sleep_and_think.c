@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 21:55:37 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/01/31 11:29:50 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:29:32 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_eat(t_philo	*philo)
 	pthread_mutex_lock(&philo->second_fork->fork);
 	print_status(philo, SECOND_FORK, DEBUG_MODE);
 	set_long(&philo->philo_mutex,
-		&philo->last_meal_time, get_time(MILLISSECONDS));
+		&philo->last_meal_time, get_time(MILLISECONDS));
 	philo->meals_taken++;
 	print_status(philo, EATING, DEBUG_MODE);
 	precise_usleep(philo->table->time_to_eat, philo->table);
