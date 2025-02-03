@@ -6,17 +6,28 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 19:00:46 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/02/02 15:29:13 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/03 11:58:31 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/*
+Checks if the simulation has ended.
+Returns true if the simulation should stop, false otherwise.
+*/
 bool	simulation_finished(t_table	*table)
 {
 	return (get_bool(&table->table_mutex, &table->end_simulation));
 }
 
+/*
+Main routine for philosopher threads.
+- Waits for all threads to be ready.
+- Records the philosopher's initial meal time.
+- Synchronizes with other philosophers.
+- Loops through eating, sleeping, and thinking until the simulation ends.
+*/
 void	*dinner_simulation(void *arg)
 {
 	t_philo	*philo;
@@ -39,21 +50,27 @@ void	*dinner_simulation(void *arg)
 	return (NULL);
 }
 
+/*
+Checks if a philosopher has exceeded their time to die.
+Returns true if the philosopher has died, false otherwise.
+*/
 static bool	philo_died(t_philo *philo)
 {
 	long	elapsed;
-	long	time_to_die;
 
 	if (get_bool(&philo->philo_mutex, &philo->full))
 		return (false);
 	elapsed = get_time(MILLISECONDS) - get_long(&philo->philo_mutex,
 			&philo->last_meal_time);
-	time_to_die = philo->table->time_to_die / 1000;
-	if (elapsed > time_to_die)
-		return (true);
-	return (false);
+	return (elapsed > (philo->table->time_to_die / 1000));
 }
 
+/*
+Monitors the simulation to detect philosopher deaths.
+- Waits until all threads are running.
+- Continuously checks if any philosopher has died.
+- Ends the simulation if a death is detected.
+*/
 void	*monitor_simulation(void *arg)
 {
 	int		i;
@@ -78,6 +95,12 @@ void	*monitor_simulation(void *arg)
 	return (NULL);
 }
 
+/*
+Handles the special case where there is only one philosopher.
+- Waits for synchronization.
+- Picks up the only available fork.
+- Waits until the simulation ends.
+*/
 void	*lone_philo(void *arg)
 {
 	t_philo	*philo;
