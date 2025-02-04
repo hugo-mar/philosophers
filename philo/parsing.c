@@ -6,7 +6,7 @@
 /*   By: hugo-mar <hugo-mar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 12:02:45 by hugo-mar          #+#    #+#             */
-/*   Updated: 2025/02/02 23:28:44 by hugo-mar         ###   ########.fr       */
+/*   Updated: 2025/02/04 14:52:35 by hugo-mar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static long	ft_atol(const char *str)
 		nbr = nbr * 10 + (*str - '0');
 		str++;
 	}
-	if (nbr > INT_MAX)
+	if (nbr > INT_MAX || *str != '\0')
 		return (-1);
 	else
 		return (nbr);
@@ -97,10 +97,10 @@ int	parse_input(t_table *table, char **argv)
 	else
 		table->max_meals = -1;
 	if (table->time_to_die < (60 * 1000) || table->time_to_eat < (60 * 1000)
-		|| table->time_to_sleep < (60 * 1000) || table->nbr_philos == 0
+		|| table->time_to_sleep < (60 * 1000) || table->nbr_philos <= 0
 		|| table->max_meals == -2)
 	{
-		printf("Invalid arguments\n");
+		printf("Invalid arguments to start the simulation\n");
 		return (-1);
 	}
 	return (0);
